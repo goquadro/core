@@ -61,7 +61,7 @@ func init() {
 		mongoDBHosts:        getenv("QDOC_MONGO_HOST", "localhost"),
 		authDatabase:        getenv("QDOC_MONGO_DB", "qdoc"),
 		authUserName:        getenv("QDOC_MONGO_USER", "qdoc1"),
-		authPassword:        getenv("QDOC_MONGO_PW", ""),
+		authPassword:        getenv("QDOC_MONGO_PW", "test"),
 		jobDatabase:         getenv("QDOC_MONGO_DB", "qdoc"),
 	}
 }
