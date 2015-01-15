@@ -1,8 +1,6 @@
 language: go
 go:
-  - 1.0
-  - 1.1
-  - tip
+  - 1.4
 script:
   - go build -v
   - go test -v
