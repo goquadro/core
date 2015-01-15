@@ -58,10 +58,10 @@ func init() {
 		mailgunKey:          getenv("QDOC_MAILGUN_PRIVATE_KEY", ""),
 		mailgunPubKey:       getenv("QDOC_MAILGUN_PUBLIC_KEY", ""),
 		notificationAddress: "qdoc <notify@goquadro.com>",
-		mongoDBHosts:        getenv(QDOC_MONGO_HOST, "localhost"),
-		authDatabase:        getenv(QDOC_MONGO_DB, "qdoc"),
-		authUserName:        getenv(QDOC_MONGO_USER, "qdoc1"),
-		authPassword:        getenv(QDOC_MONGO_PW, ""),
-		jobDatabase:         getenv(QDOC_MONGO_DB, "qdoc"),
+		mongoDBHosts:        getenv("QDOC_MONGO_HOST", "localhost"),
+		authDatabase:        getenv("QDOC_MONGO_DB", "qdoc"),
+		authUserName:        getenv("QDOC_MONGO_USER", "qdoc1"),
+		authPassword:        getenv("QDOC_MONGO_PW", ""),
+		jobDatabase:         getenv("QDOC_MONGO_DB", "qdoc"),
 	}
 }

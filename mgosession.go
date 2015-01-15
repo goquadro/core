@@ -25,11 +25,11 @@ func init() {
 	var err error
 
 	mongoDBDialInfo := &mgo.DialInfo{
-		Addrs:    []string{MongoDBHosts},
+		Addrs:    []string{gqConfig.mongoDBHosts},
 		Timeout:  60 * time.Second,
-		Database: config.authDatabase,
-		Username: config.authUserName,
-		Password: config.authPassword,
+		Database: gqConfig.authDatabase,
+		Username: gqConfig.authUserName,
+		Password: gqConfig.authPassword,
 	}
 
 	mgoSession, err = mgo.DialWithInfo(mongoDBDialInfo)
@@ -52,15 +52,15 @@ func init() {
 		Key:    []string{"code"},
 		Unique: false,
 	}
-	err = mgoSession.DB(config.jobDatabase).C(UsersCollection).EnsureIndex(usernameIndex)
+	err = mgoSession.DB(gqConfig.jobDatabase).C(UsersCollection).EnsureIndex(usernameIndex)
 	if err != nil {
 		log.Fatal("Error creating users index:", err)
 	}
-	err = mgoSession.DB(config.jobDatabase).C(DocumentsCollection).EnsureIndex(tagsIndex)
+	err = mgoSession.DB(gqConfig.jobDatabase).C(DocumentsCollection).EnsureIndex(tagsIndex)
 	if err != nil {
 		log.Fatal("Error creating documents index:", err)
 	}
-	err = mgoSession.DB(config.jobDatabase).C(SignupCodesCollection).EnsureIndex(signupCodesIndex)
+	err = mgoSession.DB(gqConfig.jobDatabase).C(SignupCodesCollection).EnsureIndex(signupCodesIndex)
 	if err != nil {
 		log.Fatal("Error creating signup codes index:", err)
 	}

@@ -34,7 +34,7 @@ func (l *LoginAttempt) Do() *User {
 func (u *User) Login() {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(UsersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	update := bson.M{"$set": bson.M{"last_login": time.Now(), "fails": 0}}
 	err := c.UpdateId(u.ID, update)
 	if err != nil {
@@ -46,7 +46,7 @@ func (u *User) Login() {
 func (u *User) LoginFailed() {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(UsersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	update := bson.M{"$inc": bson.M{"fails": 1}}
 	c.UpdateId(u.ID, update)
 }
@@ -65,7 +65,7 @@ func (u *User) CheckPassword() error {
 	password := u.EnteredPassword
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(UsersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	err := c.Find(bson.M{"username": u.Username}).One(&u)
 	if err != nil {
 		return err

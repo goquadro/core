@@ -51,7 +51,7 @@ type User struct {
 func (u *User) Sync() error {
 	locSession := getSession()
 	defer locSession.Close()
-	return locSession.DB(JobDatabase).C(UsersCollection).FindId(u.ID).One(u)
+	return locSession.DB(gqConfig.jobDatabase).C(UsersCollection).FindId(u.ID).One(u)
 }
 
 // Returns a pointer to a User object, given its ID in the form of a string.
@@ -70,7 +70,7 @@ func GetUserByName(username string) (*User, error) {
 	u := new(User)
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(UsersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	err := c.Find(bson.M{"username": username}).One(u)
 	if err != nil {
 		log.Println("GetUserByName error:", err) // Debug code
@@ -136,11 +136,11 @@ func (u1 *User) MergeAndClean(u2 User) error {
 	}
 	locSession := getSession()
 	defer locSession.Close()
-	uc := locSession.DB(JobDatabase).C(UsersCollection)
+	uc := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	if bson.IsObjectIdHex(u2.ID.String()) {
 		docsFinder := bson.M{"owner": u2.ID}
 		change := bson.M{"$set": bson.M{"owner": u1.ID}}
-		err := locSession.DB(JobDatabase).C(DocumentsCollection).Update(docsFinder, change)
+		err := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection).Update(docsFinder, change)
 		if err != nil {
 			return err
 		}
@@ -213,7 +213,7 @@ func (u *User) SetPassword(password string) error {
 func (u *User) Register(candidate User) error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(UsersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(UsersCollection)
 	err := u.SetUsername(candidate.Username)
 	if err != nil {
 		return err
@@ -253,6 +253,6 @@ func (u *User) GetById(uid string) error {
 	bsonid := bson.ObjectIdHex(uid)
 	locSession := getSession()
 	defer locSession.Close()
-	err := locSession.DB(JobDatabase).C(UsersCollection).FindId(bsonid).One(&u)
+	err := locSession.DB(gqConfig.jobDatabase).C(UsersCollection).FindId(bsonid).One(&u)
 	return err
 }

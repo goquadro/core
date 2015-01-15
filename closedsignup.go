@@ -24,7 +24,7 @@ type SignupCode struct {
 func (s *SignupCode) Persist() error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(SignupCodesCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(SignupCodesCollection)
 	return c.Insert(s)
 }
 
@@ -34,7 +34,7 @@ func (u *User) SignupWithCode(code string) error {
 	signupCodes := []SignupCode{}
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(SignupCodesCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(SignupCodesCollection)
 	err := c.Find(bson.M{"code": code}).All(&signupCodes)
 	if err != nil {
 		return err

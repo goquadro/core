@@ -16,7 +16,7 @@ const (
 
 // ValidateEmailAddress is a wrapper for Mailgun email validator
 func ValidateEmailAddress(email string) (mailgun.EmailVerification, error) {
-	gun := mailgun.NewMailgun(config.mailgunDomain, config.mailgunKey, config.mailgunPubKey)
+	gun := mailgun.NewMailgun(gqConfig.mailgunDomain, gqConfig.mailgunKey, gqConfig.mailgunPubKey)
 	return gun.ValidateEmail(email)
 }
 
@@ -25,16 +25,16 @@ func ValidateEmailAddress(email string) (mailgun.EmailVerification, error) {
 func RegisterToNewsletter(email string) error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(SubscribersCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(SubscribersCollection)
 	err := c.Insert(bson.M{"email": email})
 	return err
 }
 
 // Wrapper for the Mailgun sender API
 func SendMail(subject, body, recipient string) error {
-	gun := mailgun.NewMailgun(config.mailgunDomain, config.mailgunKey, config.mailgunPubKey)
+	gun := mailgun.NewMailgun(gqConfig.mailgunDomain, gqConfig.mailgunKey, gqConfig.mailgunPubKey)
 
-	m := mailgun.NewMessage(config.notificationAddress, subject, body, recipient)
+	m := mailgun.NewMessage(gqConfig.notificationAddress, subject, body, recipient)
 	response, id, err := gun.Send(m)
 	log.Printf("Response ID: %s\n", id)
 	log.Printf("Message from server: %s\n", response)

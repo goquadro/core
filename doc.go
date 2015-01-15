@@ -37,7 +37,7 @@ func (u User) Documents() (*[]Document, error) {
 	docs := []Document{}
 	locSession := getSession()
 	defer locSession.Close()
-	err := locSession.DB(JobDatabase).C(DocumentsCollection).Find(bson.M{"user": u.ID}).All(&docs)
+	err := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection).Find(bson.M{"user": u.ID}).All(&docs)
 	return &docs, err
 }
 
@@ -73,7 +73,7 @@ func (user *User) GetDocumentById(id string) (*Document, error) {
 	locSession := getSession()
 	defer locSession.Close()
 	docFinder := bson.M{"user": user.ID, "_id": bsonId}
-	err := locSession.DB(JobDatabase).C(DocumentsCollection).Find(docFinder).One(&doc)
+	err := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection).Find(docFinder).One(&doc)
 	return &doc, err
 }
 
@@ -100,7 +100,7 @@ func (u *User) AddDocument(doc *Document) error {
 
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(DocumentsCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection)
 	err := c.Insert(doc)
 
 	if err == nil {
@@ -120,7 +120,7 @@ func (u *User) AddDocument(doc *Document) error {
 func (d Document) AddChild(child *Document) error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(DocumentsCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection)
 	docFinder := bson.M{"_id": d.ID, "user": d.Owner}
 	err := c.Find(docFinder).One(d)
 	if err != nil {
@@ -136,7 +136,7 @@ func (u *User) GetDocsByTags(tags []string) (*[]Document, error) {
 	docs := []Document{}
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(DocumentsCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection)
 	docFinder := bson.M{"user": u.ID, "tags": tags}
 	err := c.Find(docFinder).All(&docs)
 	return &docs, err
@@ -148,7 +148,7 @@ func (u *User) GetDocsByTags(tags []string) (*[]Document, error) {
 func (d *Document) ChangeOwner(u *User) error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(DocumentsCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection)
 	docFinder := bson.M{"_id": d.ID, "user": d.Owner}
 	change := bson.M{"$set": bson.M{"user": u.ID, "last_modified": time.Now()}}
 	return c.Update(docFinder, change)
@@ -163,14 +163,14 @@ func (u *User) DeleteDocument(d *Document) error {
 	}
 	locSession := getSession()
 	defer locSession.Close()
-	return locSession.DB(JobDatabase).C(DocumentsCollection).Remove(bson.M{"_id": candidateDoc.ID, "user": u.ID})
+	return locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection).Remove(bson.M{"_id": candidateDoc.ID, "user": u.ID})
 }
 
 // User.PutDocument is a PUT (full overwrite) scheme document modifier
 func (u *User) PutDocument(d *Document) error {
 	locSession := getSession()
 	defer locSession.Close()
-	c := locSession.DB(JobDatabase).C(DocumentsCollection)
+	c := locSession.DB(gqConfig.jobDatabase).C(DocumentsCollection)
 	selector := bson.M{"_id": d.ID, "user": u.ID}
 	return c.Update(selector, d)
 }
