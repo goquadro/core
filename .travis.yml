@@ -1,4 +1,5 @@
 language: go
+services: mongodb
 go:
   - 1.4
 script:
